@@ -1,0 +1,94 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model Post {
+  id            String      @id @default(uuid()) @db.Uuid
+  slug          String      @unique
+  title         String
+  excerpt       String
+  content       String
+  coverImageUrl String?
+  coverImageAlt String?
+  publishedAt   DateTime?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  status        PostStatus  @default(DRAFT)
+  topics        PostTopic[]
+
+  @@index([status])
+  @@index([publishedAt])
+}
+
+model Topic {
+  id          String      @id @default(uuid()) @db.Uuid
+  slug        String      @unique
+  name        String
+  description String
+  sortOrder   Int
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  posts       PostTopic[]
+}
+
+model PostTopic {
+  postId  String @db.Uuid
+  topicId String @db.Uuid
+  post    Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  topic   Topic  @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  @@id([postId, topicId])
+  @@index([topicId])
+}
+
+model ResourceCategory {
+  id        String     @id @default(uuid()) @db.Uuid
+  slug      String     @unique
+  name      String
+  sortOrder Int
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  resources Resource[]
+}
+
+model Resource {
+  id          String           @id @default(uuid()) @db.Uuid
+  categoryId  String           @db.Uuid
+  title       String
+  description String
+  url         String?
+  author      String?
+  sortOrder   Int
+  isPublished Boolean          @default(false)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  category    ResourceCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+}
+
+model JournalPrompt {
+  id          String   @id @default(uuid()) @db.Uuid
+  prompt      String
+  sortOrder   Int
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model NewsletterSubscriber {
+  id             String    @id @default(uuid()) @db.Uuid
+  email          String    @unique
+  subscribedAt   DateTime  @default(now())
+  unsubscribedAt DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}

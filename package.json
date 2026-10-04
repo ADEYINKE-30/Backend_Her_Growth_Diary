@@ -1,0 +1,27 @@
+{
+  "name": "her-growth-diary-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Backend foundation for Her Growth Diary",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "typecheck": "tsc --noEmit",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.0",
+    "dotenv": "^16.4.7",
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^22.13.10",
+    "prisma": "^6.19.0",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2"
+  }
+}
