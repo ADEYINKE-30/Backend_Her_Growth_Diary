@@ -20,6 +20,7 @@ model Post {
   content       String
   coverImageUrl String?
   coverImageAlt String?
+  coverImagePublicId String?
   publishedAt   DateTime?
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
@@ -27,6 +28,8 @@ model Post {
   topics        PostTopic[]
 
   @@index([status])
+  @@index([status, createdAt])
+  @@index([status, publishedAt])
   @@index([publishedAt])
 }
 
@@ -68,6 +71,8 @@ model Resource {
   description String
   url         String?
   author      String?
+  imageUrl    String?
+  imagePublicId String?
   sortOrder   Int
   isPublished Boolean          @default(false)
   createdAt   DateTime         @default(now())
@@ -91,4 +96,35 @@ model NewsletterSubscriber {
   unsubscribedAt DateTime?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
+}
+
+enum AdminRole {
+  ADMIN
+  EDITOR
+}
+
+model AdminUser {
+  id           String         @id @default(uuid()) @db.Uuid
+  email        String         @unique
+  passwordHash String
+  role         AdminRole      @default(ADMIN)
+  lastLoginAt  DateTime?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  sessions     AdminSession[]
+}
+
+model AdminSession {
+  id             String    @id @default(uuid()) @db.Uuid
+  tokenHash      String    @unique
+  csrfTokenHash  String
+  adminUserId    String    @db.Uuid
+  expiresAt      DateTime
+  lastUsedAt     DateTime  @default(now())
+  revokedAt      DateTime?
+  createdAt      DateTime  @default(now())
+  adminUser      AdminUser @relation(fields: [adminUserId], references: [id], onDelete: Cascade)
+
+  @@index([adminUserId])
+  @@index([expiresAt])
 }
