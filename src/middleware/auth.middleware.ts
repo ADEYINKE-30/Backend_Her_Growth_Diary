@@ -1,5 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import { ApiError } from "../errors/api.error";
+import {
+  ApiError,
+  AuthenticationError,
+  AuthorizationError,
+} from "../errors/api.error";
 import { AdminRole } from "@prisma/client";
 import {
   getAuthenticatedAdmin,
@@ -17,12 +21,12 @@ export async function requireAdmin(
   try {
     const sessionToken = readCookie(request, SESSION_COOKIE);
     if (!sessionToken) {
-      throw new ApiError(401, "Authentication required.");
+      throw new AuthenticationError();
     }
 
     const admin = await getAuthenticatedAdmin(sessionToken);
     if (!admin) {
-      throw new ApiError(401, "Authentication required.");
+      throw new AuthenticationError();
     }
 
     request.admin = admin;
@@ -40,7 +44,7 @@ export function requireCsrf(
   try {
     const csrfToken = request.header("X-CSRF-Token");
     if (!request.admin || !csrfToken || !tokensMatch(hashToken(csrfToken), request.admin.csrfTokenHash)) {
-      throw new ApiError(403, "CSRF validation failed.");
+      throw new AuthorizationError("CSRF validation failed.");
     }
     next();
   } catch (error) {
@@ -55,7 +59,7 @@ export function requireRole(...allowedRoles: AdminRole[]) {
     next: NextFunction,
   ): void => {
     if (!request.admin || !allowedRoles.includes(request.admin.role)) {
-      next(new ApiError(403, "Insufficient permissions."));
+      next(new AuthorizationError());
       return;
     }
     next();
