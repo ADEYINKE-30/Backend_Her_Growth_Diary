@@ -2,6 +2,7 @@ import { Prisma } from "@prisma/client";
 import { ApiError } from "../errors/api.error";
 import { prisma } from "../lib/prisma";
 import { removeImage } from "./image.service";
+import { paginationMeta } from "../lib/pagination";
 
 export interface ResourceInput {
   categoryId: string;
@@ -64,7 +65,7 @@ export async function listResources(options: {
 
   return {
     data: resources.map(mapResource),
-    meta: { page: options.page, limit: options.limit, total },
+    meta: paginationMeta(options.page, options.limit, total),
   };
 }
 

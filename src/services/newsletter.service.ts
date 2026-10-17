@@ -1,5 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "../lib/prisma";
+import { paginationMeta } from "../lib/pagination";
 
 export function normalizeSubscriberEmail(email: string): string {
   return email.trim().toLowerCase();
@@ -69,6 +70,6 @@ export async function listNewsletterSubscribers(options: {
 
   return {
     data: subscribers,
-    meta: { page: options.page, limit: options.limit, total },
+    meta: paginationMeta(options.page, options.limit, total),
   };
 }

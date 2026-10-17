@@ -15,7 +15,11 @@ export function readCookie(request: Request, name: string): string | undefined {
     }
     const key = part.slice(0, separator).trim();
     if (key === name) {
-      return decodeURIComponent(part.slice(separator + 1).trim());
+      try {
+        return decodeURIComponent(part.slice(separator + 1).trim());
+      } catch {
+        return undefined;
+      }
     }
   }
 
@@ -25,7 +29,7 @@ export function readCookie(request: Request, name: string): string | undefined {
 const cookieOptions = {
   httpOnly: true,
   secure: env.nodeEnv === "production",
-  sameSite: "lax" as const,
+  sameSite: env.nodeEnv === "production" ? ("none" as const) : ("lax" as const),
   path: "/",
 };
 

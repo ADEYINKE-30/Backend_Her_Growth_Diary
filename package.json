@@ -8,6 +8,8 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
+    "test": "vitest run",
+    "test:db:reset": "tsx tests/setup/reset-test-database.ts",
     "typecheck": "tsc --noEmit",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
@@ -26,8 +28,11 @@
     "@types/express": "^5.0.3",
     "@types/multer": "^2.3.0",
     "@types/node": "^22.13.10",
+    "@types/supertest": "^7.2.1",
     "prisma": "^6.19.0",
+    "supertest": "^7.3.1",
     "tsx": "^4.19.3",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.2",
+    "vitest": "^5.0.5"
   }
 }

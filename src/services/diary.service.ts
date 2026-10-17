@@ -5,6 +5,7 @@ import {
 import { prisma } from "../lib/prisma";
 import { ApiError } from "../errors/api.error";
 import { removeImage } from "./image.service";
+import { paginationMeta } from "../lib/pagination";
 
 export interface DiaryPostInput {
   slug: string;
@@ -104,14 +105,7 @@ export async function listDiaryPosts(options: {
 
   return {
     data: posts.map(mapPost),
-    meta: {
-      page: options.page,
-      limit: options.limit,
-      total,
-      totalPages: Math.ceil(total / options.limit),
-      hasNextPage: options.page * options.limit < total,
-      hasPreviousPage: options.page > 1,
-    },
+    meta: paginationMeta(options.page, options.limit, total),
   };
 }
 

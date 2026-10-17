@@ -1,6 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { ApiError } from "../errors/api.error";
 import { prisma } from "../lib/prisma";
+import { paginationMeta } from "../lib/pagination";
 
 export interface PromptInput {
   prompt: string;
@@ -24,7 +25,7 @@ export async function listPrompts(options: { page: number; limit: number }) {
 
   return {
     data: prompts,
-    meta: { page: options.page, limit: options.limit, total },
+    meta: paginationMeta(options.page, options.limit, total),
   };
 }
 

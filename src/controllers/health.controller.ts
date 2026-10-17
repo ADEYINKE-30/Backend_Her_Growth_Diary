@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
 import { prisma } from "../lib/prisma";
 
+export function logHealthDatabaseError(): void {
+  console.error("Health database check failed.");
+}
+
 export async function getHealth(
   _request: Request,
   response: Response,
@@ -14,8 +18,8 @@ export async function getHealth(
       database: "connected",
       timestamp: new Date().toISOString(),
     });
-  } catch (error) {
-    console.error(error);
+  } catch {
+    logHealthDatabaseError();
 
     response.status(503).json({
       status: "error",

@@ -55,7 +55,18 @@ export async function loginAdmin(email: string, password: string) {
     where: { email: normalizeEmail(email) },
   });
 
-  if (!admin || !(await argon2.verify(admin.passwordHash, password))) {
+  if (!admin) {
+    throw new ApiError(401, "Invalid email or password.");
+  }
+
+  try {
+    if (!(await argon2.verify(admin.passwordHash, password))) {
+      throw new ApiError(401, "Invalid email or password.");
+    }
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
     throw new ApiError(401, "Invalid email or password.");
   }
 

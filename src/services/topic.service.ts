@@ -1,6 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { ApiError } from "../errors/api.error";
 import { prisma } from "../lib/prisma";
+import { paginationMeta } from "../lib/pagination";
 
 export interface TopicInput {
   slug: string;
@@ -43,7 +44,7 @@ export async function listTopics(options: { page: number; limit: number }) {
 
   return {
     data: topics.map(mapTopic),
-    meta: { page: options.page, limit: options.limit, total },
+    meta: paginationMeta(options.page, options.limit, total),
   };
 }
 

@@ -19,7 +19,14 @@ export const diaryCreateSchema = z
       .nullable()
       .optional(),
     status: z.enum(["DRAFT", "PUBLISHED"]).optional(),
-    topicIds: z.array(uuid).optional(),
+    topicIds: z.array(uuid).superRefine((topicIds, context) => {
+      if (new Set(topicIds).size !== topicIds.length) {
+        context.addIssue({
+          code: "custom",
+          message: "must not contain duplicate topic ids",
+        });
+      }
+    }).optional(),
   })
   .strict();
 

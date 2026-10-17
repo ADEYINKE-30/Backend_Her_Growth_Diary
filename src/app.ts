@@ -11,9 +11,11 @@ import {
   errorHandler,
   notFoundHandler,
 } from "./middleware/error.middleware";
+import { corsMiddleware } from "./middleware/cors.middleware";
 
 const app = express();
 
+app.use(corsMiddleware);
 app.use(express.json());
 app.use("/api/health", healthRouter);
 app.use("/api/diary", diaryRouter);
