@@ -13,7 +13,8 @@
     "typecheck": "tsc --noEmit",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "admin:setup": "tsx src/scripts/setup-admin.ts"
+    "admin:setup": "tsx src/scripts/setup-admin.ts",
+    "admin:reset": "tsx src/scripts/reset-admin.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.19.0",
