@@ -5,11 +5,18 @@ dotenv.config();
 const parsedPort = Number(process.env.PORT ?? 5000);
 
 const databaseUrl = process.env.DATABASE_URL;
-const frontendOrigins = (process.env.FRONTEND_ORIGINS ??
-  "http://localhost:8443,https://her-growth-diary.vercel.app,https://her-growth-diary-d1ttrthw2-adeyinka3.vercel.app")
+const defaultFrontendOrigins = [
+  "http://localhost:8443",
+  "https://her-growth-diary.vercel.app",
+  "https://her-growth-diary-d1ttrthw2-adeyinka3.vercel.app",
+];
+const configuredFrontendOrigins = (process.env.FRONTEND_ORIGINS ?? "")
   .split(",")
   .map((origin) => origin.trim().replace(/\/$/, ""))
   .filter(Boolean);
+const frontendOrigins = [
+  ...new Set([...defaultFrontendOrigins, ...configuredFrontendOrigins]),
+];
 
 if (!Number.isInteger(parsedPort) || parsedPort <= 0) {
   throw new Error("PORT must be a positive integer");
