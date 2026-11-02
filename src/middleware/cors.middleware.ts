@@ -3,6 +3,12 @@ import { env } from "../config/env";
 
 const allowedMethods = "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS";
 const allowedHeaders = "Content-Type, X-CSRF-Token";
+const vercelDeploymentOrigin =
+  /^https:\/\/her-growth-diary(?:-[a-z0-9-]+)?-adeyinka3\.vercel\.app$/i;
+
+function isAllowedOrigin(origin: string): boolean {
+  return env.frontendOrigins.includes(origin) || vercelDeploymentOrigin.test(origin);
+}
 
 export function corsMiddleware(
   request: Request,
@@ -16,7 +22,7 @@ export function corsMiddleware(
     return;
   }
 
-  if (!env.frontendOrigins.includes(origin)) {
+  if (!isAllowedOrigin(origin)) {
     if (request.method === "OPTIONS") {
       response.status(403).json({
         status: "error",
